@@ -1,0 +1,64 @@
+@'
+.venv/
+__pycache__/
+.pytest_cache/
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite3
+papers/
+data/
+'@ | Set-Content .gitignore
+
+@'
+TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
+DATABASE_URL=sqlite:///data/library.db
+PAPERS_DIR=papers
+'@ | Set-Content .env.example
+
+@'
+# Research Library
+
+Flask + SQLAlchemy backend (uv) and Vite React/TypeScript frontend.
+
+## Windows setup
+
+Install with winget (PowerShell):
+
+    winget install Python.Python.3.12
+    winget install OpenJS.NodeJS.LTS
+    winget install Git.Git
+    winget install astral-sh.uv
+    winget install UB-Mannheim.TesseractOCR
+
+Add `C:\Program Files\Tesseract-OCR` to your user PATH, then check:
+
+    tesseract --version
+    tesseract --list-langs    # must include "eng"
+
+If PowerShell blocks npm:
+
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Optional: keep uv and model caches on the same drive as the repo (set `UV_CACHE_DIR` and `HF_HOME`).
+
+## Install from lockfiles
+
+    cd backend;  uv sync --locked
+    cd frontend; npm ci
+
+## Run tests
+
+    cd backend;  uv run pytest
+    cd frontend; npm test
+
+## Start
+
+    cd backend;  uv run flask --app app run --debug
+    cd frontend; npm run dev
+
+Copy `.env.example` to `.env` and adjust. Put private PDFs in `papers/` (git-ignored).
+'@ | Set-Content README.md
